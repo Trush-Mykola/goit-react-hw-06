@@ -1,6 +1,11 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import css from "./ContactForm.module.css";
 import * as Yup from "yup";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { nanoid } from "nanoid";
+import { useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
+
+import css from "./ContactForm.module.css";
+
 const initialValues = {
   name: "",
   number: "",
@@ -11,9 +16,14 @@ const ContactFormSchema = Yup.object().shape({
   number: Yup.string().min(3, "Too short! This field must be at least three characters long!").max(50, "Too Long!").required("Required"),
 });
 
-const ContactForm = ({ onAdd }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
   const onSubmitHandle = (values, actions) => {
-    onAdd(values);
+    const newContact = {
+      ...values,
+      id: nanoid(),
+    };
+    dispatch(addContact(newContact));
     actions.resetForm();
   };
 
